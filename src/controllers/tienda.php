@@ -1,7 +1,12 @@
 <?php
 
 use RapiExpress\Models\Tienda;
-use RapiExpress\Interface\ITiendaModel;
+use function RapiExpress\Helpers\{
+    validarCampoRequerido,
+    validarCorreo,
+    validarTelefono,
+    validarNombreAlfanumerico
+};
 
 function tienda_index() {
     if (!isset($_SESSION['usuario'])) {
@@ -19,27 +24,67 @@ function tienda_registrar() {
         session_start();
         $tiendaModel = new Tienda();
 
+        $nombre = trim($_POST['nombre_tienda']);
+        $direccion = trim($_POST['direccion_tienda']);
+        $telefono = trim($_POST['telefono_tienda']);
+        $correo = trim($_POST['correo_tienda']);
+
+        $errores = [];
+
+        // Validaciones
+        if ($error = validarCampoRequerido($nombre, "Nombre de tienda")) $errores[] = $error;
+        if ($error = validarCampoRequerido($direccion, "Dirección de tienda")) $errores[] = $error;
+        if ($error = validarCampoRequerido($telefono, "Teléfono de tienda")) $errores[] = $error;
+        if ($error = validarCampoRequerido($correo, "Correo de tienda")) $errores[] = $error;
+
+        if ($error = validarNombreAlfanumerico($nombre, "Nombre de tienda", 50)) $errores[] = $error;
+        if ($error = validarNombreAlfanumerico($direccion, "Dirección de tienda", 100)) $errores[] = $error;
+        if ($error = validarTelefono($telefono)) $errores[] = $error;
+        if ($error = validarCorreo($correo)) $errores[] = $error;
+
+        if (!empty($errores)) {
+            $_SESSION['mensaje'] = implode("<br>", $errores);
+            $_SESSION['tipo_mensaje'] = 'error';
+            header('Location: index.php?c=tienda');
+            exit();
+        }
+
+        $data = compact('nombre', 'direccion', 'telefono', 'correo');
         $data = [
-            'nombre_tienda' => trim($_POST['nombre_tienda']),
-            'direccion_tienda' => trim($_POST['direccion_tienda']),
-            'telefono_tienda' => trim($_POST['telefono_tienda']),
-            'correo_tienda' => trim($_POST['correo_tienda']),
+            'nombre_tienda' => $nombre,
+            'direccion_tienda' => $direccion,
+            'telefono_tienda' => $telefono,
+            'correo_tienda' => $correo,
         ];
 
         $resultado = $tiendaModel->registrar($data);
 
         switch ($resultado) {
             case 'registro_exitoso':
-                $_SESSION['mensaje'] = 'Tienda registrada exitosamente';
+                $_SESSION['mensaje'] = 'Tienda registrada exitosamente.';
                 $_SESSION['tipo_mensaje'] = 'success';
                 break;
+            case 'nombre_existente':
+                $_SESSION['mensaje'] = 'Error: Ya existe una tienda con ese nombre.';
+                $_SESSION['tipo_mensaje'] = 'warning';
+                break;
+            case 'direccion_existente':
+                $_SESSION['mensaje'] = 'Error: Ya existe una tienda con esa dirección.';
+                $_SESSION['tipo_mensaje'] = 'warning';
+                break;
+            case 'telefono_existente':
+                $_SESSION['mensaje'] = 'Error: Ya existe una tienda con ese teléfono.';
+                $_SESSION['tipo_mensaje'] = 'warning';
+                break;
+            case 'correo_existente':
+                $_SESSION['mensaje'] = 'Error: Ya existe una tienda con ese correo.';
+                $_SESSION['tipo_mensaje'] = 'warning';
+                break;
             case 'error_bd':
-                $_SESSION['mensaje'] = 'Error al registrar la tienda';
+            default:
+                $_SESSION['mensaje'] = 'Error al registrar la tienda.';
                 $_SESSION['tipo_mensaje'] = 'error';
                 break;
-            default:
-                $_SESSION['mensaje'] = 'Error desconocido';
-                $_SESSION['tipo_mensaje'] = 'error';
         }
 
         header('Location: index.php?c=tienda');
@@ -52,33 +97,73 @@ function tienda_editar() {
         session_start();
         $tiendaModel = new Tienda();
 
-        $required = ['id_tienda', 'nombre_tienda', 'direccion_tienda', 'telefono_tienda', 'correo_tienda'];
-        foreach ($required as $field) {
-            if (empty($_POST[$field])) {
-                $_SESSION['mensaje'] = "Error: El campo $field es requerido";
-                $_SESSION['tipo_mensaje'] = 'error';
-                header('Location: index.php?c=tienda');
-                exit();
-            }
+        $id = $_POST['id_tienda'];
+        $nombre = trim($_POST['nombre_tienda']);
+        $direccion = trim($_POST['direccion_tienda']);
+        $telefono = trim($_POST['telefono_tienda']);
+        $correo = trim($_POST['correo_tienda']);
+
+        $errores = [];
+
+        // Validaciones
+        if ($error = validarCampoRequerido($id, "ID de tienda")) $errores[] = $error;
+        if ($error = validarCampoRequerido($nombre, "Nombre de tienda")) $errores[] = $error;
+        if ($error = validarCampoRequerido($direccion, "Dirección de tienda")) $errores[] = $error;
+        if ($error = validarCampoRequerido($telefono, "Teléfono de tienda")) $errores[] = $error;
+        if ($error = validarCampoRequerido($correo, "Correo de tienda")) $errores[] = $error;
+
+        if ($error = validarNombreAlfanumerico($nombre, "Nombre de tienda", 50)) $errores[] = $error;
+        if ($error = validarNombreAlfanumerico($direccion, "Dirección de tienda", 100)) $errores[] = $error;
+        if ($error = validarTelefono($telefono)) $errores[] = $error;
+        if ($error = validarCorreo($correo)) $errores[] = $error;
+
+        if (!empty($errores)) {
+            $_SESSION['mensaje'] = implode("<br>", $errores);
+            $_SESSION['tipo_mensaje'] = 'error';
+            header('Location: index.php?c=tienda');
+            exit();
         }
 
         $data = [
-            'id_tienda' => (int)$_POST['id_tienda'],
-            'nombre_tienda' => trim($_POST['nombre_tienda']),
-            'direccion_tienda' => trim($_POST['direccion_tienda']),
-            'telefono_tienda' => trim($_POST['telefono_tienda']),
-            'correo_tienda' => trim($_POST['correo_tienda']),
+            'id_tienda' => (int)$id,
+            'nombre_tienda' => $nombre,
+            'direccion_tienda' => $direccion,
+            'telefono_tienda' => $telefono,
+            'correo_tienda' => $correo,
         ];
 
         $resultado = $tiendaModel->actualizar($data);
-
-        if ($resultado) {
-            $_SESSION['mensaje'] = 'Tienda actualizada exitosamente';
+        
+        if ($resultado === true) {
+            $_SESSION['mensaje'] = 'Tienda actualizada exitosamente.';
             $_SESSION['tipo_mensaje'] = 'success';
         } else {
-            $_SESSION['mensaje'] = 'Error al actualizar la tienda';
-            $_SESSION['tipo_mensaje'] = 'error';
+            switch ($resultado) {
+                case 'nombre_existente':
+                    $_SESSION['mensaje'] = 'Error: Ya existe una tienda con ese nombre.';
+                    $_SESSION['tipo_mensaje'] = 'warning';
+                    break;
+                case 'direccion_existente':
+                    $_SESSION['mensaje'] = 'Error: Ya existe una tienda con esa dirección.';
+                    $_SESSION['tipo_mensaje'] = 'warning';
+                    break;
+                case 'telefono_existente':
+                    $_SESSION['mensaje'] = 'Error: Ya existe una tienda con ese teléfono.';
+                    $_SESSION['tipo_mensaje'] = 'warning';
+                    break;
+                case 'correo_existente':
+                    $_SESSION['mensaje'] = 'Error: Ya existe una tienda con ese correo.';
+                    $_SESSION['tipo_mensaje'] = 'warning';
+                    break;
+                case 'error_bd':
+                case 'error_actualizar':
+                default:
+                    $_SESSION['mensaje'] = 'Error al actualizar la tienda.';
+                    $_SESSION['tipo_mensaje'] = 'error';
+                    break;
+            }
         }
+
 
         header('Location: index.php?c=tienda');
         exit();
@@ -121,4 +206,3 @@ function tienda_obtenerTienda() {
         exit();
     }
 }
-?>
