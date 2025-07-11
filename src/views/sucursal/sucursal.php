@@ -105,50 +105,74 @@
     </div>
 </div>
 
+
 <!-- Modal Agregar Sucursal -->
 <div class="modal fade" id="sucursalModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form method="POST" action="index.php?c=sucursal&a=registrar">
+            <form method="POST" action="index.php?c=sucursal&a=registrar" novalidate>
                 <div class="modal-header">
                     <h5 class="modal-title">Registrar Nueva Sucursal</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+
                 <div class="modal-body">
+                    <!-- RIF -->
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">RIF</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="RIF_Sucursal" required>
+                            <input type="text" class="form-control" name="RIF_Sucursal"
+                                   pattern="^[JGVEP]{1}-\d{8}-\d{1}$"
+                                   title="Formato válido: J-12345678-9"
+                                   maxlength="15" required>
                         </div>
                     </div>
 
+                    <!-- Nombre -->
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Nombre</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="Sucursal_Nombre" required>
+                            <input type="text" class="form-control" name="Sucursal_Nombre"
+                                   pattern="^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,\-()_]+$"
+                                   title="Solo letras, números y caracteres válidos (,.-())"
+                                   maxlength="50" required>
                         </div>
                     </div>
+
+                    <!-- Dirección -->
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Dirección</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="Sucursal_Direccion">
+                            <input type="text" class="form-control" name="Sucursal_Direccion"
+                                   maxlength="100"
+                                   pattern="^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,\-()_]+$"
+                                   title="Solo letras, números y caracteres válidos (,.-())">
                         </div>
                     </div>
+
+                    <!-- Teléfono -->
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Teléfono</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="Sucursal_Telefono">
+                            <input type="text" class="form-control" name="Sucursal_Telefono"
+                                   pattern="^\d{7,15}$"
+                                   title="Solo números, entre 7 y 15 dígitos"
+                                   maxlength="15" required>
                         </div>
                     </div>
+
+                    <!-- Correo -->
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Correo</label>
                         <div class="col-sm-9">
-                            <input type="email" class="form-control" name="Sucursal_Correo">
+                            <input type="email" class="form-control" name="Sucursal_Correo"
+                                   maxlength="100" required>
                         </div>
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Registrar Sucursal</button>
@@ -157,6 +181,7 @@
         </div>
     </div>
 </div>
+
 
 <?php foreach ($sucursales as $suc): ?>
 <!-- Modal Ver Detalles -->
@@ -200,47 +225,76 @@
 <div class="modal fade" id="edit-sucursal-modal-<?= $suc['ID_Sucursal'] ?>" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <form method="POST" action="index.php?c=sucursal&a=editar">
+            <form method="POST" action="index.php?c=sucursal&a=editar" novalidate>
                 <div class="modal-header">
                     <h4 class="modal-title">Editar Sucursal</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                
+
                 <div class="modal-body">
                     <input type="hidden" name="ID_Sucursal" value="<?= $suc['ID_Sucursal'] ?>">
+
+                    <!-- Nombre -->
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Nombre</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="Sucursal_Nombre" value="<?= htmlspecialchars($suc['Sucursal_Nombre']) ?>" required>
+                            <input type="text" class="form-control" name="Sucursal_Nombre"
+                                   value="<?= htmlspecialchars($suc['Sucursal_Nombre']) ?>"
+                                   pattern="^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,\-()_]+$"
+                                   title="Solo letras, números y caracteres válidos (,.-())"
+                                   maxlength="50" required>
                         </div>
                     </div>
+
+                    <!-- RIF -->
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">RIF</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="RIF_Sucursal" value="<?= htmlspecialchars($suc['RIF_Sucursal']) ?>" required>
+                            <input type="text" class="form-control" name="RIF_Sucursal"
+                                   value="<?= htmlspecialchars($suc['RIF_Sucursal']) ?>"
+                                   pattern="^[JGVEP]{1}-\d{8}-\d{1}$"
+                                   title="Formato válido: J-12345678-9"
+                                   maxlength="15" required>
                         </div>
                     </div>
+
+                    <!-- Dirección -->
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Dirección</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="Sucursal_Direccion" value="<?= htmlspecialchars($suc['Sucursal_Direccion']) ?>">
+                            <input type="text" class="form-control" name="Sucursal_Direccion"
+                                   value="<?= htmlspecialchars($suc['Sucursal_Direccion']) ?>"
+                                   pattern="^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,\-()_]*$"
+                                   title="Solo letras, números y caracteres permitidos (,.-())"
+                                   maxlength="100">
                         </div>
                     </div>
+
+                    <!-- Teléfono -->
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Teléfono</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="Sucursal_Telefono" value="<?= htmlspecialchars($suc['Sucursal_Telefono']) ?>">
+                            <input type="text" class="form-control" name="Sucursal_Telefono"
+                                   value="<?= htmlspecialchars($suc['Sucursal_Telefono']) ?>"
+                                   pattern="^\d{7,15}$"
+                                   title="Solo números, entre 7 y 15 dígitos"
+                                   maxlength="15" required>
                         </div>
                     </div>
+
+                    <!-- Correo -->
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Correo</label>
                         <div class="col-sm-9">
-                            <input type="email" class="form-control" name="Sucursal_Correo" value="<?= htmlspecialchars($suc['Sucursal_Correo']) ?>">
+                            <input type="email" class="form-control" name="Sucursal_Correo"
+                                   value="<?= htmlspecialchars($suc['Sucursal_Correo']) ?>"
+                                   maxlength="100" required>
                         </div>
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Guardar Cambios</button>

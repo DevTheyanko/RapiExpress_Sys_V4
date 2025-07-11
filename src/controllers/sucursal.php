@@ -2,6 +2,11 @@
 
 use RapiExpress\Models\Sucursal;
 use RapiExpress\Interface\ISucursalModel;
+require_once __DIR__ . '/../helpers/validaciones.php';
+use RapiExpress\Helpers;
+
+
+
 
 function sucursal_index() {
     if (!isset($_SESSION['usuario'])) {
@@ -27,6 +32,29 @@ function sucursal_registrar() {
             'Sucursal_Correo'    => trim($_POST['Sucursal_Correo'])
         ];
 
+        // Validaciones
+        $errores = [];
+
+        $errores[] = Helpers\validarCampoRequerido($data['RIF_Sucursal'], 'RIF');
+        $errores[] = Helpers\validarRif($data['RIF_Sucursal']);
+        $errores[] = Helpers\validarCampoRequerido($data['Sucursal_Nombre'], 'Nombre');
+        $errores[] = Helpers\validarNombre($data['Sucursal_Nombre']);
+        $errores[] = Helpers\validarCampoRequerido($data['Sucursal_Direccion'], 'Dirección');
+        $errores[] = Helpers\validarNombreAlfanumerico($data['Sucursal_Direccion'], 'Dirección');
+        $errores[] = Helpers\validarCampoRequerido($data['Sucursal_Telefono'], 'Teléfono');
+        $errores[] = Helpers\validarTelefono($data['Sucursal_Telefono']);
+        $errores[] = Helpers\validarCampoRequerido($data['Sucursal_Correo'], 'Correo');
+        $errores[] = Helpers\validarCorreo($data['Sucursal_Correo']);
+
+        $errores = array_filter($errores); // eliminar nulls
+
+        if (!empty($errores)) {
+            $_SESSION['mensaje'] = implode('<br>', $errores);
+            $_SESSION['tipo_mensaje'] = 'error';
+            header('Location: index.php?c=sucursal');
+            exit();
+        }
+
         $resultado = $sucursalModel->registrar($data);
 
         switch ($resultado) {
@@ -38,6 +66,18 @@ function sucursal_registrar() {
                 $_SESSION['mensaje'] = 'El RIF ya está registrado';
                 $_SESSION['tipo_mensaje'] = 'error';
                 break;
+            case 'nombre_existente':
+                $_SESSION['mensaje'] = 'El nombre de la sucursal ya está registrado';
+                $_SESSION['tipo_mensaje'] = 'error';
+                break;
+            case 'telefono_existente':
+                $_SESSION['mensaje'] = 'El teléfono ya está registrado en otra sucursal';
+                $_SESSION['tipo_mensaje'] = 'error';
+                break;
+            case 'correo_existente':
+                $_SESSION['mensaje'] = 'El correo ya está registrado en otra sucursal';
+                $_SESSION['tipo_mensaje'] = 'error';
+                break;
             default:
                 $_SESSION['mensaje'] = 'Error al registrar la sucursal';
                 $_SESSION['tipo_mensaje'] = 'error';
@@ -47,7 +87,6 @@ function sucursal_registrar() {
         exit();
     }
 }
-
 function sucursal_editar() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         session_start();
@@ -72,6 +111,24 @@ function sucursal_editar() {
             'Sucursal_Correo'    => trim($_POST['Sucursal_Correo'])
         ];
 
+        // Validaciones
+        $errores = [];
+
+        $errores[] = Helpers\validarRif($data['RIF_Sucursal']);
+        $errores[] = Helpers\validarNombre($data['Sucursal_Nombre']);
+        $errores[] = Helpers\validarNombreAlfanumerico($data['Sucursal_Direccion'], 'Dirección');
+        $errores[] = Helpers\validarTelefono($data['Sucursal_Telefono']);
+        $errores[] = Helpers\validarCorreo($data['Sucursal_Correo']);
+
+        $errores = array_filter($errores); // eliminar nulls
+
+        if (!empty($errores)) {
+            $_SESSION['mensaje'] = implode('<br>', $errores);
+            $_SESSION['tipo_mensaje'] = 'error';
+            header('Location: index.php?c=sucursal');
+            exit();
+        }
+
         $resultado = $sucursalModel->actualizar($data);
 
         if ($resultado === true) {
@@ -79,6 +136,15 @@ function sucursal_editar() {
             $_SESSION['tipo_mensaje'] = 'success';
         } elseif ($resultado === 'rif_existente') {
             $_SESSION['mensaje'] = 'El RIF ya pertenece a otra sucursal';
+            $_SESSION['tipo_mensaje'] = 'error';
+        } elseif ($resultado === 'nombre_existente') {
+            $_SESSION['mensaje'] = 'El nombre de la sucursal ya pertenece a otra sucursal';
+            $_SESSION['tipo_mensaje'] = 'error';
+        } elseif ($resultado === 'telefono_existente') {
+            $_SESSION['mensaje'] = 'El teléfono ya pertenece a otra sucursal';
+            $_SESSION['tipo_mensaje'] = 'error';
+        } elseif ($resultado === 'correo_existente') {
+            $_SESSION['mensaje'] = 'El correo ya pertenece a otra sucursal';
             $_SESSION['tipo_mensaje'] = 'error';
         } else {
             $_SESSION['mensaje'] = 'Error al actualizar la sucursal';
@@ -91,8 +157,7 @@ function sucursal_editar() {
 }
 
 function sucursal_eliminar() {
-        session_start(); // <- Agrega esto
-
+        
     
 
     if (isset($_POST['ID_Sucursal'])) {

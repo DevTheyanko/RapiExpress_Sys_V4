@@ -98,14 +98,14 @@
     </div>
 </div>
 
-<!-- Modal Agregar Tienda -->
+<<!-- Modal Agregar Tienda -->
 <div class="modal fade" id="tiendaModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form method="POST" action="index.php?c=tienda&a=registrar">
                 <div class="modal-header">
                     <h5 class="modal-title">Registrar Nueva Tienda</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -113,25 +113,25 @@
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Nombre de la Tienda</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="nombre_tienda" required>
+                            <input type="text" class="form-control" name="nombre_tienda" required maxlength="20" >
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Dirección</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="direccion_tienda" required>
+                            <input type="text" class="form-control" name="direccion_tienda" required maxlength="255" >
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Teléfono</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="telefono_tienda" required>
+                            <input type="text" class="form-control" name="telefono_tienda" required maxlength="20" >
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Correo</label>
                         <div class="col-sm-9">
-                            <input type="email" class="form-control" name="correo_tienda" required>
+                            <input type="email" class="form-control" name="correo_tienda" required maxlength="100" >
                         </div>
                     </div>
                 </div>
@@ -151,7 +151,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Detalles de la Tienda</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -165,25 +165,25 @@
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label">Nombre</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" value="<?= $ti['Tienda_Nombre'] ?>" readonly>
+                        <input type="text" class="form-control" value="<?= htmlspecialchars($ti['Tienda_Nombre']) ?>" readonly>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label">Dirección</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" value="<?= $ti['Tienda_Direccion'] ?>" readonly>
+                        <input type="text" class="form-control" value="<?= htmlspecialchars($ti['Tienda_Direccion']) ?>" readonly>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label">Teléfono</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" value="<?= $ti['Tienda_Telefono'] ?>" readonly>
+                        <input type="text" class="form-control" value="<?= htmlspecialchars($ti['Tienda_Telefono']) ?>" readonly>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label">Correo</label>
                     <div class="col-sm-9">
-                        <input type="email" class="form-control" value="<?= $ti['Tienda_Correo'] ?>" readonly>
+                        <input type="email" class="form-control" value="<?= htmlspecialchars($ti['Tienda_Correo']) ?>" readonly>
                     </div>
                 </div>
             </div>
@@ -201,7 +201,7 @@
             <form method="POST" action="index.php?c=tienda&a=editar">
                 <div class="modal-header">
                     <h4 class="modal-title">Editar Tienda</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -210,25 +210,25 @@
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Nombre</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="nombre_tienda" value="<?= $ti['Tienda_Nombre'] ?>" required>
+                            <input type="text" class="form-control" name="nombre_tienda" value="<?= htmlspecialchars($ti['Tienda_Nombre']) ?>" required maxlength="20" >
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Dirección</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="direccion_tienda" value="<?= $ti['Tienda_Direccion'] ?>" required>
+                            <input type="text" class="form-control" name="direccion_tienda" value="<?= htmlspecialchars($ti['Tienda_Direccion']) ?>" required maxlength="100" >
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Teléfono</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="telefono_tienda" value="<?= $ti['Tienda_Telefono'] ?>" required>
+                            <input type="text" class="form-control" name="telefono_tienda" value="<?= htmlspecialchars($ti['Tienda_Telefono']) ?>" required maxlength="20" >
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Correo</label>
                         <div class="col-sm-9">
-                            <input type="email" class="form-control" name="correo_tienda" value="<?= $ti['Tienda_Correo'] ?>" required>
+                            <input type="email" class="form-control" name="correo_tienda" value="<?= htmlspecialchars($ti['Tienda_Correo']) ?>" required maxlength="100" >
                         </div>
                     </div>
                 </div>

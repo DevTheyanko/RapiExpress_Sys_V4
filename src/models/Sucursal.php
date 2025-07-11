@@ -13,12 +13,19 @@ class Sucursal extends Conexion implements ISucursalModel
     public function registrar(array $data): string
     {
         try {
-            if ($this->existeRIF($data['RIF_Sucursal'])) {
-                return 'rif_existente';
-            }
+            $verificaciones = [
+                ['campo' => 'RIF_Sucursal',       'valor' => $data['RIF_Sucursal'],       'error' => 'rif_existente'],
+                ['campo' => 'Sucursal_Nombre',    'valor' => $data['Sucursal_Nombre'],    'error' => 'nombre_existente'],
+                ['campo' => 'Sucursal_Telefono',  'valor' => $data['Sucursal_Telefono'],  'error' => 'telefono_existente'],
+                ['campo' => 'Sucursal_Correo',    'valor' => $data['Sucursal_Correo'],    'error' => 'correo_existente'],
+            ];
 
-            if ($this->existeCorreo($data['Sucursal_Correo'])) {
-                return 'correo_existente';
+            foreach ($verificaciones as $verif) {
+                $stmt = $this->db->prepare("SELECT ID_Sucursal FROM sucursales WHERE {$verif['campo']} = ?");
+                $stmt->execute([$verif['valor']]);
+                if ($stmt->fetch()) {
+                    return $verif['error'];
+                }
             }
 
             $stmt = $this->db->prepare("
@@ -71,12 +78,19 @@ class Sucursal extends Conexion implements ISucursalModel
     public function actualizar(array $data): bool|string
     {
         try {
-            if ($this->existeRIFEnOtraSucursal($data['RIF_Sucursal'], $data['ID_Sucursal'])) {
-                return 'rif_existente';
-            }
+            $verificaciones = [
+                ['campo' => 'RIF_Sucursal',       'valor' => $data['RIF_Sucursal'],       'error' => 'rif_existente'],
+                ['campo' => 'Sucursal_Nombre',    'valor' => $data['Sucursal_Nombre'],    'error' => 'nombre_existente'],
+                ['campo' => 'Sucursal_Telefono',  'valor' => $data['Sucursal_Telefono'],  'error' => 'telefono_existente'],
+                ['campo' => 'Sucursal_Correo',    'valor' => $data['Sucursal_Correo'],    'error' => 'correo_existente'],
+            ];
 
-            if ($this->existeCorreoEnOtraSucursal($data['Sucursal_Correo'], $data['ID_Sucursal'])) {
-                return 'correo_existente';
+            foreach ($verificaciones as $verif) {
+                $stmt = $this->db->prepare("SELECT ID_Sucursal FROM sucursales WHERE {$verif['campo']} = ? AND ID_Sucursal != ?");
+                $stmt->execute([$verif['valor'], $data['ID_Sucursal']]);
+                if ($stmt->fetch()) {
+                    return $verif['error'];
+                }
             }
 
             $stmt = $this->db->prepare("
@@ -110,34 +124,6 @@ class Sucursal extends Conexion implements ISucursalModel
             error_log("Error al eliminar sucursal: " . $e->getMessage());
             return false;
         }
-    }
-
-    private function existeRIF(string $rif): bool
-    {
-        $stmt = $this->db->prepare("SELECT ID_Sucursal FROM sucursales WHERE RIF_Sucursal = ?");
-        $stmt->execute([$rif]);
-        return (bool) $stmt->fetch();
-    }
-
-    private function existeRIFEnOtraSucursal(string $rif, int $idSucursal): bool
-    {
-        $stmt = $this->db->prepare("SELECT ID_Sucursal FROM sucursales WHERE RIF_Sucursal = ? AND ID_Sucursal != ?");
-        $stmt->execute([$rif, $idSucursal]);
-        return (bool) $stmt->fetch();
-    }
-
-    private function existeCorreo(string $correo): bool
-    {
-        $stmt = $this->db->prepare("SELECT ID_Sucursal FROM sucursales WHERE Sucursal_Correo = ?");
-        $stmt->execute([$correo]);
-        return (bool) $stmt->fetch();
-    }
-
-    private function existeCorreoEnOtraSucursal(string $correo, int $idSucursal): bool
-    {
-        $stmt = $this->db->prepare("SELECT ID_Sucursal FROM sucursales WHERE Sucursal_Correo = ? AND ID_Sucursal != ?");
-        $stmt->execute([$correo, $idSucursal]);
-        return (bool) $stmt->fetch();
     }
 
     public function getLastError(): string
