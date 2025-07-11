@@ -4,48 +4,38 @@ namespace RapiExpress\Models;
 use PDO;
 use PDOException;
 use RapiExpress\Config\Conexion;
-use RapiExpress\Interface\ISucursalModel;
+use RapiExpress\Interface\ITiendaModel;
 
-class Sucursal extends Conexion implements ISucursalModel
+class Tienda extends Conexion implements ITiendaModel
 {
-    private string $lastError = '';
-
     public function registrar(array $data): string
     {
         try {
+            // Validar duplicados individuales
             $verificaciones = [
-                ['campo' => 'RIF_Sucursal',       'valor' => $data['RIF_Sucursal'],       'error' => 'rif_existente'],
-                ['campo' => 'Sucursal_Nombre',    'valor' => $data['Sucursal_Nombre'],    'error' => 'nombre_existente'],
-                ['campo' => 'Sucursal_Telefono',  'valor' => $data['Sucursal_Telefono'],  'error' => 'telefono_existente'],
-                ['campo' => 'Sucursal_Correo',    'valor' => $data['Sucursal_Correo'],    'error' => 'correo_existente'],
+                ['campo' => 'Tienda_Nombre', 'valor' => $data['nombre_tienda'], 'error' => 'nombre_existente'],
+                ['campo' => 'Tienda_Direccion', 'valor' => $data['direccion_tienda'], 'error' => 'direccion_existente'],
+                ['campo' => 'Tienda_Telefono', 'valor' => $data['telefono_tienda'], 'error' => 'telefono_existente'],
+                ['campo' => 'Tienda_Correo', 'valor' => $data['correo_tienda'], 'error' => 'correo_existente'],
             ];
 
             foreach ($verificaciones as $verif) {
-                $stmt = $this->db->prepare("SELECT ID_Sucursal FROM sucursales WHERE {$verif['campo']} = ?");
+                $stmt = $this->db->prepare("SELECT ID_Tienda FROM tiendas WHERE {$verif['campo']} = ?");
                 $stmt->execute([$verif['valor']]);
-                if ($stmt->fetch()) {
-                    return $verif['error'];
-                }
+                if ($stmt->fetch()) return $verif['error'];
             }
 
-            $stmt = $this->db->prepare("
-                INSERT INTO sucursales (RIF_Sucursal, Sucursal_Nombre, Sucursal_Direccion, Sucursal_Telefono, Sucursal_Correo)
-                VALUES (?, ?, ?, ?, ?)
-            ");
-
-            $resultado = $stmt->execute([
-                $data['RIF_Sucursal'],
-                $data['Sucursal_Nombre'],
-                $data['Sucursal_Direccion'],
-                $data['Sucursal_Telefono'],
-                $data['Sucursal_Correo']
-            ]);
-
-            return $resultado ? 'registro_exitoso' : 'error_registro';
+            // Insertar tienda
+            $stmt = $this->db->prepare("INSERT INTO tiendas (Tienda_Nombre, Tienda_Direccion, Tienda_Telefono, Tienda_Correo) VALUES (?, ?, ?, ?)");
+            return $stmt->execute([
+                $data['nombre_tienda'],
+                $data['direccion_tienda'],
+                $data['telefono_tienda'],
+                $data['correo_tienda']
+            ]) ? 'registro_exitoso' : 'error_registro';
 
         } catch (PDOException $e) {
-            $this->lastError = $e->getMessage();
-            error_log("Error en registro sucursal: " . $e->getMessage());
+            error_log("Error en registro tienda: " . $e->getMessage());
             return 'error_bd';
         }
     }
@@ -53,11 +43,11 @@ class Sucursal extends Conexion implements ISucursalModel
     public function obtenerTodas(): array
     {
         try {
-            $stmt = $this->db->query("SELECT * FROM sucursales ORDER BY ID_Sucursal DESC");
+            $stmt = $this->db->prepare("SELECT * FROM tiendas ORDER BY ID_Tienda DESC");
+            $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->lastError = $e->getMessage();
-            error_log("Error al obtener sucursales: " . $e->getMessage());
+            error_log("Error al obtener todas las tiendas: " . $e->getMessage());
             return [];
         }
     }
@@ -65,69 +55,58 @@ class Sucursal extends Conexion implements ISucursalModel
     public function obtenerPorId(int $id): ?array
     {
         try {
-            $stmt = $this->db->prepare("SELECT * FROM sucursales WHERE ID_Sucursal = ?");
+            $stmt = $this->db->prepare("SELECT * FROM tiendas WHERE ID_Tienda = ?");
             $stmt->execute([$id]);
             return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
         } catch (PDOException $e) {
-            $this->lastError = $e->getMessage();
-            error_log("Error al obtener sucursal por ID: " . $e->getMessage());
+            error_log("Error al obtener tienda por ID: " . $e->getMessage());
             return null;
         }
     }
 
-    public function actualizar(array $data): bool|string
+    public function actualizar(array $data): string|bool
     {
         try {
+            // Validar duplicados individuales (excluyendo la misma tienda)
             $verificaciones = [
-                ['campo' => 'RIF_Sucursal',       'valor' => $data['RIF_Sucursal'],       'error' => 'rif_existente'],
-                ['campo' => 'Sucursal_Nombre',    'valor' => $data['Sucursal_Nombre'],    'error' => 'nombre_existente'],
-                ['campo' => 'Sucursal_Telefono',  'valor' => $data['Sucursal_Telefono'],  'error' => 'telefono_existente'],
-                ['campo' => 'Sucursal_Correo',    'valor' => $data['Sucursal_Correo'],    'error' => 'correo_existente'],
+                ['campo' => 'Tienda_Nombre', 'valor' => $data['nombre_tienda'], 'error' => 'nombre_existente'],
+                ['campo' => 'Tienda_Direccion', 'valor' => $data['direccion_tienda'], 'error' => 'direccion_existente'],
+                ['campo' => 'Tienda_Telefono', 'valor' => $data['telefono_tienda'], 'error' => 'telefono_existente'],
+                ['campo' => 'Tienda_Correo', 'valor' => $data['correo_tienda'], 'error' => 'correo_existente'],
             ];
 
             foreach ($verificaciones as $verif) {
-                $stmt = $this->db->prepare("SELECT ID_Sucursal FROM sucursales WHERE {$verif['campo']} = ? AND ID_Sucursal != ?");
-                $stmt->execute([$verif['valor'], $data['ID_Sucursal']]);
-                if ($stmt->fetch()) {
-                    return $verif['error'];
-                }
+                $stmt = $this->db->prepare("SELECT ID_Tienda FROM tiendas WHERE {$verif['campo']} = ? AND ID_Tienda != ?");
+                $stmt->execute([$verif['valor'], $data['id_tienda']]);
+                if ($stmt->fetch()) return $verif['error'];
             }
 
-            $stmt = $this->db->prepare("
-                UPDATE sucursales
-                SET RIF_Sucursal = ?, Sucursal_Nombre = ?, Sucursal_Direccion = ?, Sucursal_Telefono = ?, Sucursal_Correo = ?
-                WHERE ID_Sucursal = ?
-            ");
-
+            // Actualizar tienda
+            $stmt = $this->db->prepare("UPDATE tiendas 
+                SET Tienda_Nombre = ?, Tienda_Direccion = ?, Tienda_Telefono = ?, Tienda_Correo = ?
+                WHERE ID_Tienda = ?");
             return $stmt->execute([
-                $data['RIF_Sucursal'],
-                $data['Sucursal_Nombre'],
-                $data['Sucursal_Direccion'],
-                $data['Sucursal_Telefono'],
-                $data['Sucursal_Correo'],
-                $data['ID_Sucursal']
-            ]);
+                $data['nombre_tienda'],
+                $data['direccion_tienda'],
+                $data['telefono_tienda'],
+                $data['correo_tienda'],
+                $data['id_tienda']
+            ]) ? true : 'error_actualizar';
+
         } catch (PDOException $e) {
-            $this->lastError = $e->getMessage();
-            error_log("Error al actualizar sucursal: " . $e->getMessage());
-            return false;
+            error_log("Error al actualizar tienda: " . $e->getMessage());
+            return 'error_bd';
         }
     }
 
     public function eliminar(int $id): bool
     {
         try {
-            $stmt = $this->db->prepare("DELETE FROM sucursales WHERE ID_Sucursal = ?");
+            $stmt = $this->db->prepare("DELETE FROM tiendas WHERE ID_Tienda = ?");
             return $stmt->execute([$id]);
         } catch (PDOException $e) {
-            $this->lastError = $e->getMessage();
-            error_log("Error al eliminar sucursal: " . $e->getMessage());
+            error_log("Error al eliminar tienda: " . $e->getMessage());
             return false;
         }
-    }
-
-    public function getLastError(): string
-    {
-        return $this->lastError;
     }
 }

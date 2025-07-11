@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-07-2025 a las 22:43:56
+-- Tiempo de generación: 11-07-2025 a las 12:22:36
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `practica`
+-- Base de datos: `rapiexpress_db`
 --
 
 -- --------------------------------------------------------
@@ -38,16 +38,7 @@ CREATE TABLE `cargos` (
 
 INSERT INTO `cargos` (`ID_Cargo`, `Cargo_Nombre`) VALUES
 (1, 'Administrador'),
-(2, 'Empleado'),
-(4, 'sdsdas'),
-(5, 'asdas'),
-(6, 'sadsad'),
-(7, 'sdasd'),
-(8, 'sadasdsad'),
-(9, 'dddddddddddddddddddd'),
-(10, 'asdsa'),
-(11, 'asdasd'),
-(12, 'asasas');
+(2, 'Empleado');
 
 -- --------------------------------------------------------
 
@@ -66,8 +57,7 @@ CREATE TABLE `casilleros` (
 --
 
 INSERT INTO `casilleros` (`ID_Casillero`, `Casillero_Nombre`, `Direccion`) VALUES
-(1, 'Casillero 1', 'Calle 1'),
-(2, 'Casillero 2', 'Calle 2');
+(1, 'Casillero 1', 'MIAMI');
 
 -- --------------------------------------------------------
 
@@ -85,16 +75,6 @@ CREATE TABLE `categorias` (
   `Categoria_Piezas` int(11) DEFAULT NULL,
   `Categoria_Precio` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `categorias`
---
-
-INSERT INTO `categorias` (`ID_Categoria`, `Categoria_Nombre`, `Categoria_Altura`, `Categoria_Largo`, `Categoria_Ancho`, `Categoria_Peso`, `Categoria_Piezas`, `Categoria_Precio`) VALUES
-(2, 'C_costoso', 10.00, 10.00, 10.00, 100.00, 1, 10.00),
-(3, 'C_costoso', 23.00, 12.00, 3.00, 4.00, 1, 45.00),
-(4, 'C_costoso', 10.00, 10.00, 10.00, 10.00, 1, 10.00),
-(5, 'C_costosossssssssss', 1.00, 1.00, 3.00, 6.00, 1, 5.00);
 
 -- --------------------------------------------------------
 
@@ -120,8 +100,7 @@ CREATE TABLE `clientes` (
 --
 
 INSERT INTO `clientes` (`ID_Cliente`, `Cedula_Identidad`, `Nombres_Cliente`, `Apellidos_Cliente`, `Direccion_Cliente`, `Telefono_Cliente`, `Correo_Cliente`, `Fecha_Registro`, `ID_Sucursal`, `ID_Casillero`) VALUES
-(2, '44556666', 'pedro', 'j', 'Carrera 18\r\nSanta Eduvigis', '04268092177', 'jeancleal03022004@gmail.com', '2025-07-09 22:53:18', 2, 1),
-(3, '44556654', 'Jean Carlos', 'Leal Guede', 'Carrera 18\r\nSanta Eduvigis', '04268092177', 'jeanclea004@gmail.com', '2025-07-10 16:30:54', 2, 2);
+(1, '123456789', 'Juan', 'Martinez', 'Carrera 18', '04262345678', 'Juan@Martinez.com', '2025-07-11 06:03:48', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -137,6 +116,14 @@ CREATE TABLE `courier` (
   `Courier_Telefono` varchar(20) DEFAULT NULL,
   `Courier_Correo` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `courier`
+--
+
+INSERT INTO `courier` (`ID_Courier`, `RIF_Courier`, `Courier_Nombre`, `Courier_Direccion`, `Courier_Telefono`, `Courier_Correo`) VALUES
+(1, 'J-12345678-1', 'MRW', 'Venezuela', '04141234567', 'MRW@Venezuela.com'),
+(2, 'J-12345678-2', 'FedEx', 'MIAMI', '04142345678', 'FedEx@MIAMI.COM');
 
 -- --------------------------------------------------------
 
@@ -277,7 +264,9 @@ CREATE TABLE `sucursales` (
 --
 
 INSERT INTO `sucursales` (`ID_Sucursal`, `RIF_Sucursal`, `Sucursal_Nombre`, `Sucursal_Direccion`, `Sucursal_Telefono`, `Sucursal_Correo`) VALUES
-(2, '32434', 'jadasd', 'asdasdasd', '244334242', 'sdasa@gmail.com');
+(1, 'J-12345678-1', 'RapiExpress VEN', 'AV. LARA , BARQUISIMETO', '04241234567', 'RapiExpress@ven.com'),
+(2, 'J-12345678-2', 'RapiExpress EC', 'Guayaquil', '04243456789', 'RapiExpress@ec.com'),
+(3, 'J-12345678-3', 'BODEGA USA', 'Miami', '04244567891', 'RapiExpress@usa.com');
 
 -- --------------------------------------------------------
 
@@ -292,6 +281,13 @@ CREATE TABLE `tiendas` (
   `Tienda_Telefono` varchar(20) DEFAULT NULL,
   `Tienda_Correo` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tiendas`
+--
+
+INSERT INTO `tiendas` (`ID_Tienda`, `Tienda_Nombre`, `Tienda_Direccion`, `Tienda_Telefono`, `Tienda_Correo`) VALUES
+(1, 'Amazon', 'Online', '04141234567', 'support@amazon.com');
 
 -- --------------------------------------------------------
 
@@ -330,12 +326,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`ID_Usuario`, `Cedula_Identidad`, `Nombres_Usuario`, `Apellidos_Usuario`, `Username`, `Password`, `Telefono_Usuario`, `Correo_Usuario`, `Direccion_Usuario`, `Fecha_Registro`, `ID_Cargo`, `ID_Sucursal`) VALUES
-(1, 'V00000001', 'Admin', 'Principal', 'admin', 'admin123', '04140000000', 'admin@correo.com', 'Dirección admin', '2025-07-09 19:33:22', 1, NULL),
-(2, '45678901', 'Ana', 'Gómez', 'agomez', '$2y$10$X3Vnwo7rigQAAZ1ZsmLv5uTokQTgMqNH3.Cm5tvy/0gtMCGaUe0C6', '74567890', 'ana.gomez@mail.com', 'Zona Norte', '2025-06-25 02:21:56', 1, NULL),
-(3, '34567890', 'Luis', 'Martíneznnn', 'lmartinez', '$2y$10$vOktTe6S4DK5fL4DGqjUn.i/HHu5.RoRdhw5qFrGfhX/esRK2jEIe', '73456789', 'luis.martinez@mail.com', 'Zona Sur', '2025-06-25 02:21:56', 1, NULL),
-(4, '123456784', 'asd', 'Martínez', 'lmartinez344', '$2y$10$YSuUvVwUqoWjQmrld93FnONXVAgYA67I44Op9Mn1RnM0EO6xsmE6O', '5656533', 'sddd@gmail.com', 'sdfsfsd', '2025-06-27 00:40:11', 1, 2),
-(6, '445599999', 'Jean Carlos', 'Leal Guedez', 'Admin02', '$2y$10$OjelIjqkk9uksVGUS/Q6vefgj3f0UyWGduNrqb3YKSPkLLcX4gt1O', '04268092177', 'jeancleal03022004@gmail.com', 'Carrera 18', '2025-07-10 09:58:01', 2, 2),
-(7, '44557777', 'Jean Carlos', 'Leal Guedez', 'lmartinezk', '$2y$10$1Z4W1UmFsdfx6D9gnLxK3e2MfEts9P7NPxAQWhsurMWgMRU3J9/wW', '04268092177', 'jeancleal03022@gmail.com', 'Carrera 18', '2025-07-10 09:59:27', 2, 2);
+(1, 'V00000001', 'Admin', 'Principal', 'admin', '$2y$10$VbnFri/F9wdeEhrLDYD7Fe.1mpsN8X4wRQdrz13SU6ZlbUn711A1.', '04140000000', 'admin@correo.com', 'Dirección admin', '2025-07-09 19:33:22', 1, 1);
 
 --
 -- Índices para tablas volcadas
@@ -475,31 +466,31 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `cargos`
 --
 ALTER TABLE `cargos`
-  MODIFY `ID_Cargo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `ID_Cargo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `casilleros`
 --
 ALTER TABLE `casilleros`
-  MODIFY `ID_Casillero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `ID_Casillero` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `ID_Categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `ID_Categoria` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `ID_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `ID_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `courier`
 --
 ALTER TABLE `courier`
-  MODIFY `ID_Courier` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Courier` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_pagos`
@@ -547,13 +538,13 @@ ALTER TABLE `sacas`
 -- AUTO_INCREMENT de la tabla `sucursales`
 --
 ALTER TABLE `sucursales`
-  MODIFY `ID_Sucursal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID_Sucursal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `tiendas`
 --
 ALTER TABLE `tiendas`
-  MODIFY `ID_Tienda` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Tienda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `tracking`
@@ -565,7 +556,7 @@ ALTER TABLE `tracking`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `ID_Usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `ID_Usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restricciones para tablas volcadas

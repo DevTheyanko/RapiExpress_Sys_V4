@@ -29,8 +29,9 @@
 				
             
 				<div class="title pb-20">
-    <h2 class="h3 mb-10">👋 Bienvenido, <?= htmlspecialchars($_SESSION['nombre_completo']) ?> al panel de RapiExpress.</h2>
     <h2 class="h3 mb-0">Dashboard</h2>
+	    <h2 class="h3 mb-10">👋 Bienvenido, <?= htmlspecialchars($_SESSION['nombre_completo']) ?> al panel de RapiExpress.</h2>
+
 </div>
 
 

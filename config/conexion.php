@@ -14,7 +14,7 @@ abstract class Conexion extends PDO implements IConexion {
 
     public function inicializarConexion(): void {
         $host = 'localhost';
-        $dbname = 'practica';
+        $dbname = 'rapiexpress_db';
         $username = 'root';
         $password = '';
         $charset = 'utf8mb4';

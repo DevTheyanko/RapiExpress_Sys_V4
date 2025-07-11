@@ -104,7 +104,6 @@
         </tbody>
     </table>
 </div>
-
 <!-- Modal Agregar Courier -->
 <div class="modal fade" id="courierModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg">
@@ -123,14 +122,45 @@
                         'Courier_Telefono' => 'Teléfono',
                         'Courier_Correo' => 'Correo'
                     ];
-                    foreach ($campos as $campo => $label): ?>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label"><?= $label ?></label>
-                            <div class="col-sm-9">
-                                <input type="<?= strpos($campo, 'Correo') !== false ? 'email' : 'text' ?>" name="<?= $campo ?>" class="form-control" required>
-                            </div>
+                    ?>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">RIF</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="RIF_Courier" class="form-control" required
+                                pattern="[JGVEP]{1}-\d{8}-\d{1}" maxlength="20"
+                                title="Formato válido: J-12345678-9">
                         </div>
-                    <?php endforeach; ?>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Nombre</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="Courier_Nombre" class="form-control" required
+                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,20}"
+                                title="Solo letras y espacios. Máximo 20 caracteres." maxlength="20">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Dirección</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="Courier_Direccion" class="form-control" required
+                                pattern="[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,\-()_]{1,100}"
+                                title="Dirección válida: letras, números y ,.-()_" maxlength="100">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Teléfono</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="Courier_Telefono" class="form-control" required
+                                pattern="\d{7,15}" title="Solo dígitos. Entre 7 y 20 caracteres." maxlength="20">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Correo</label>
+                        <div class="col-sm-9">
+                            <input type="email" name="Courier_Correo" class="form-control" required
+                                maxlength="100">
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -140,6 +170,7 @@
         </div>
     </div>
 </div>
+
 <?php foreach ($couriers as $courier): ?>
 <div class="modal fade bs-example-modal-lg" id="view-courier-modal-<?= $courier['ID_Courier'] ?>" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -206,14 +237,58 @@
                 </div>
                 <div class="modal-body">
                     <input type="hidden" name="ID_Courier" value="<?= $c['ID_Courier'] ?>">
-                    <?php foreach ($campos as $campo => $label): ?>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label"><?= $label ?></label>
-                            <div class="col-sm-9">
-                                <input type="<?= strpos($campo, 'Correo') !== false ? 'email' : 'text' ?>" name="<?= $campo ?>" class="form-control" value="<?= htmlspecialchars($c[$campo]) ?>" required>
-                            </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">RIF</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="RIF_Courier" class="form-control" required
+                                pattern="[JGVEP]{1}-\d{8}-\d{1}" maxlength="23"
+                                title="Formato válido: J-12345678-9"
+                                value="<?= htmlspecialchars($c['RIF_Courier']) ?>">
                         </div>
-                    <?php endforeach; ?>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Nombre</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="Courier_Nombre" class="form-control" required
+                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,50}"
+                                maxlength="50"
+                                title="Solo letras y espacios. Máximo 50 caracteres."
+                                value="<?= htmlspecialchars($c['Courier_Nombre']) ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Dirección</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="Courier_Direccion" class="form-control" required
+                                pattern="[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,\-()_]{1,100}"
+                                maxlength="100"
+                                title="Dirección válida: letras, números y ,.-()_"
+                                value="<?= htmlspecialchars($c['Courier_Direccion']) ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Teléfono</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="Courier_Telefono" class="form-control" required
+                                pattern="\d{7,15}" maxlength="15"
+                                title="Solo dígitos. Entre 7 y 15 caracteres."
+                                value="<?= htmlspecialchars($c['Courier_Telefono']) ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Correo</label>
+                        <div class="col-sm-9">
+                            <input type="email" name="Courier_Correo" class="form-control" required
+                                maxlength="100"
+                                value="<?= htmlspecialchars($c['Courier_Correo']) ?>">
+                        </div>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -224,6 +299,8 @@
     </div>
 </div>
 <?php endforeach; ?>
+
+
 <!-- Modal para Eliminar Courier -->
 <div class="modal fade" id="delete-courier-modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
