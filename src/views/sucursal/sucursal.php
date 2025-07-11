@@ -61,7 +61,7 @@
         <table class="data-table table stripe hover nowrap" id="sucursalesTable">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    
                     <th>RIF</th>
                     <th>Nombre</th>
                     <th>Dirección</th>
@@ -73,7 +73,7 @@
             <tbody>
                 <?php foreach ($sucursales as $sucursal): ?>
                 <tr>
-                    <td><?= htmlspecialchars($sucursal['ID_Sucursal']) ?></td>
+                    
                     <td><?= htmlspecialchars($sucursal['RIF_Sucursal']) ?></td>
                     <td><?= htmlspecialchars($sucursal['Sucursal_Nombre']) ?></td>
                     <td><?= htmlspecialchars($sucursal['Sucursal_Direccion']) ?></td>
